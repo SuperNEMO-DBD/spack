@@ -7,7 +7,7 @@ from spack import *
 from spack.operating_systems.mac_os import macos_version
 import sys
 
-class SnemoQt5base(Package):
+class Qt5Base(Package):
     """Qt5 Core Libraries (SuperNEMO Packaging)
     """
 
