@@ -4,7 +4,7 @@
 # SPDX-License-Identifier: (Apache-2.0 OR MIT)
 
 from spack import *
-
+import sys
 
 class Gl2ps(CMakePackage):
     """GL2PS is a C library providing high quality vector output for any
@@ -22,28 +22,26 @@ class Gl2ps(CMakePackage):
 
     depends_on('cmake@2.4:', type='build')
 
-    # X11 libraries:
-    #depends_on('freeglut')
-    depends_on('gl')
-    depends_on('glu')
-    #depends_on('libice')
-    #depends_on('libsm')
-    #depends_on('libxau')
-    #depends_on('libxdamage')
-    #depends_on('libxdmcp')
-    #depends_on('libxext')
-    #depends_on('libxfixes')
-    #depends_on('libxi')
-    #depends_on('libxmu')
-    #depends_on('libxt')
-    #depends_on('libxxf86vm')
-    #depends_on('libxcb')
-    #depends_on('libdrm')
-    #depends_on('expat')
-
     depends_on('libpng', when='+png')
     depends_on('zlib',   when='+zlib')
     depends_on('texlive', type='build', when='+doc')
+
+    depends_on('gl')
+    depends_on('glu')
+    
+    # X11 libraries are needed on Linux because CMake's find_package
+    # will require them until CMake 3.2:
+    if sys.platform == 'linux':
+         # GLUT only for the test program?
+         depends_on('freeglut')
+         # Link on standard CentOS platform is
+         # -lGLU -lGL -lSM -lICE -lX11 -lXext -lglut -lXmu -lXi -lz -lpng -lz -lm -lpng -lm 
+         depends_on('libsm')
+         depends_on('libice')
+         depends_on('libx11')
+         depends_on('libxext')
+         depends_on('libxmu')
+         depends_on('libxi')
 
     def variant_to_bool(self, variant):
         return 'ON' if variant in self.spec else 'OFF'
